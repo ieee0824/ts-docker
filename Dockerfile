@@ -36,6 +36,22 @@ RUN set -e \
 	&& groupadd -g 1001 developer \
 	&& useradd  -g      developer -G sudo -m -s /bin/bash dev \
 	&& echo 'Defaults visiblepw'             >> /etc/sudoers \
-	&& echo 'dev ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+	&& echo 'dev ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 
+	&& su - dev -c "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" \
+	&& echo "call plug#begin('~/.vim/plugged')" >> /home/dev/.vimrc \
+	&& echo "    Plug 'scrooloose/nerdtree'" >> /home/dev/.vimrc \
+	&& echo "call plug#end()" >> /home/dev/.vimrc \
+	&& echo '" ------------------------------------' >> /home/dev/.vimrc \
+	&& echo '" colorscheme' >> /home/dev/.vimrc \
+	&& echo '" ------------------------------------' >> /home/dev/.vimrc \
+	&& echo "" >> /home/dev/.vimrc \
+
+	&& chown dev /home/dev/.vimrc \
+	&& sudo -u dev vim +PlugInstall +qall
+    	
 USER dev
+
+WORKDIR /home/dev
+
+CMD ["bash"]
